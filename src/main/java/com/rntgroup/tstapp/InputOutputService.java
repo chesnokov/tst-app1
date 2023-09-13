@@ -5,8 +5,8 @@ import java.io.PrintStream;
 import java.util.Scanner;
 
 public class InputOutputService {
-	private PrintStream out;
-	private InputStream in;
+	private final PrintStream out;
+	private final InputStream in;
 
 	public InputOutputService(InputStream in, PrintStream out) {
 		this.in = in;
