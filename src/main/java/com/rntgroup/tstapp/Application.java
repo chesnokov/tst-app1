@@ -1,7 +1,7 @@
 package com.rntgroup.tstapp;
 
 import com.rntgroup.tstapp.repository.CompositeUserTestRepository;
-import com.rntgroup.tstapp.repository.RepositoryException;
+import com.rntgroup.tstapp.repository.UserTestRepositoryException;
 import com.rntgroup.tstapp.test.Question;
 import com.rntgroup.tstapp.test.UserTest;
 import com.rntgroup.tstapp.test.UserTestResult;
@@ -28,7 +28,7 @@ public class Application {
 		try {
 			List<UserTest> tests = repository.findAll();
 			listAndRunUserTests(tests);
-		} catch (RepositoryException e) {
+		} catch (UserTestRepositoryException e) {
 			ioService.println(ExceptionUtils.getStackTrace(e));
 		}
 	}

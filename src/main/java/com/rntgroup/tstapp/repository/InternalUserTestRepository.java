@@ -34,7 +34,7 @@ public class InternalUserTestRepository implements UserTestRepository {
 	public List<UserTest> findAll() {
 		URL resource = InternalUserTestRepository.class.getResource("/anyfile");
 		if(isNull(resource)) {
-			throw new RepositoryException("Resource file '/anyfile' not found");
+			throw new UserTestRepositoryException("Resource file '/anyfile' not found");
 		}
 		String fileName = resource.getFile();
 		String jarName = new File(fileName)
@@ -60,7 +60,7 @@ public class InternalUserTestRepository implements UserTestRepository {
 				}
 			}
 		} catch (IOException e) {
-			throw new RepositoryException(MessageFormat.format("Error reading user test files list from {0}", jarName), e);
+			throw new UserTestRepositoryException(MessageFormat.format("Error reading user test files list from {0}", jarName), e);
 		}
 		return tstFiles;
 	}
@@ -80,9 +80,9 @@ public class InternalUserTestRepository implements UserTestRepository {
 		try(CSVReader csvReader = new CSVReader(new InputStreamReader(InternalUserTestRepository.class.getResourceAsStream(path)))) {
 			return userTestReader.makeUserTest(path, csvReader);
 		} catch (IOException e) {
-			throw new RepositoryException(MessageFormat.format("Error reading user test file from internal resource {0}", path), e);
+			throw new UserTestRepositoryException(MessageFormat.format("Error reading user test file from internal resource {0}", path), e);
 		} catch (CsvValidationException e) {
-			throw new RepositoryException(MessageFormat.format("Error in csv structure of user test file {0}", path), e);
+			throw new UserTestRepositoryException(MessageFormat.format("Error in csv structure of user test file {0}", path), e);
 		}
 	}
 
