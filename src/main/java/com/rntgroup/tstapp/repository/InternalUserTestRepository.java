@@ -70,7 +70,7 @@ public class InternalUserTestRepository implements UserTestRepository {
 		File[] files = directory.listFiles();
 
 		return Arrays.stream(Optional.ofNullable(files).orElse(new File[0]))
-				.filter(f -> f.getName().endsWith(".csv"))
+				.filter(f -> f.getName().endsWith(userTestSuffix))
 				.map(f -> "/" + userTestDir + "/" + f.getName())
 				.map(this::makeUserTest)
 				.collect(Collectors.toList());
