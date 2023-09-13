@@ -5,7 +5,6 @@ import com.opencsv.exceptions.CsvValidationException;
 import com.rntgroup.tstapp.test.Answer;
 import com.rntgroup.tstapp.test.Question;
 import com.rntgroup.tstapp.test.UserTest;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -13,6 +12,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class TestCsvUserTestReader {
 	private CsvUserTestReader userTestReader;
@@ -29,7 +30,7 @@ public class TestCsvUserTestReader {
 
 		try(CSVReader reader = new CSVReader(new InputStreamReader(TestCsvUserTestReader.class.getResourceAsStream("/test2.csv")))) {
 			UserTest userTest = userTestReader.makeUserTest("testName", reader);
-			Assertions.assertThat(userTest).isEqualToComparingFieldByFieldRecursively(expectedUserTest);
+			assertThat(userTest).isEqualToComparingFieldByFieldRecursively(expectedUserTest);
 		}
 	}
 
@@ -50,7 +51,7 @@ public class TestCsvUserTestReader {
 
 		try(CSVReader reader = new CSVReader(new InputStreamReader(TestCsvUserTestReader.class.getResourceAsStream("/test1.csv")))) {
 			UserTest userTest = userTestReader.makeUserTest("testName", reader);
-			Assertions.assertThat(userTest).isEqualToComparingFieldByFieldRecursively(expectedUserTest);
+			assertThat(userTest).isEqualToComparingFieldByFieldRecursively(expectedUserTest);
 		}
 	}
 }
