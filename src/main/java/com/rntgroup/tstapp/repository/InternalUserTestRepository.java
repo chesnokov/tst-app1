@@ -42,12 +42,12 @@ public class InternalUserTestRepository implements UserTestRepository {
 				.replaceAll("(!|file:\\\\)", "");
 
 		if(jarName.endsWith(".jar")) {
-			return getTstFilesFromJar(jarName);
+			return getUserTestsFromJarFile(jarName);
 		}
-		return getTstFilesFromFileSystem();
+		return getUserTestsFromFileSystem();
 	}
 
-	private List<UserTest> getTstFilesFromJar(String jarName) {
+	private List<UserTest> getUserTestsFromJarFile(String jarName) {
 		List<UserTest> tstFiles = new ArrayList<>();
 		try (JarFile jf = new JarFile(jarName)){
 
@@ -65,7 +65,7 @@ public class InternalUserTestRepository implements UserTestRepository {
 		return tstFiles;
 	}
 
-	private List<UserTest> getTstFilesFromFileSystem() {
+	private List<UserTest> getUserTestsFromFileSystem() {
 		File directory = new File(InternalUserTestRepository.class.getResource("/" + userTestDir).getFile());
 		File[] files = directory.listFiles();
 
