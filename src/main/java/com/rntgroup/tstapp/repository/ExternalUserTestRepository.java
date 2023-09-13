@@ -16,11 +16,13 @@ import java.util.stream.Collectors;
 
 public class ExternalUserTestRepository implements UserTestRepository {
 	private final String userTestDir;
+	private final String userTestSuffix;
 	private final CsvUserTestReader userTestReader;
 
 
-	public ExternalUserTestRepository(String userTestDir, CsvUserTestReader userTestReader) {
+	public ExternalUserTestRepository(String userTestDir, String userTestSuffix, CsvUserTestReader userTestReader) {
 		this.userTestDir = userTestDir;
+		this.userTestSuffix = userTestSuffix;
 		this.userTestReader = userTestReader;
 	}
 
@@ -29,7 +31,7 @@ public class ExternalUserTestRepository implements UserTestRepository {
 		File[] files = directory.listFiles();
 
 		return Arrays.stream(Optional.ofNullable(files).orElse(new File[0]))
-				.filter(f -> f.getName().endsWith(".csv"))
+				.filter(f -> f.getName().endsWith(userTestSuffix))
 				.map(this::makeUserTest)
 				.collect(Collectors.toList());
 	}

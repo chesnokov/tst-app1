@@ -24,7 +24,8 @@
 
     <bean id="externalTstDir" class="com.rntgroup.tstapp.repository.ExternalUserTestRepository">
         <constructor-arg index="0" ref="userTestDirectory" />
-        <constructor-arg index="1" ref="userTestReader" />
+        <constructor-arg index="1" value=".csv" />
+        <constructor-arg index="2" ref="userTestReader" />
     </bean>
 
     <bean id="internalTstDir" class="com.rntgroup.tstapp.repository.InternalUserTestRepository">
