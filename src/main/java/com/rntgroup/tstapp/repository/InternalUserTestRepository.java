@@ -34,7 +34,7 @@ public class InternalUserTestRepository implements UserTestRepository {
 	public List<UserTest> findAll() {
 		URL resource = InternalUserTestRepository.class.getResource("/anyfile");
 		if(isNull(resource)) {
-			throw new RepositoryException("Resource file 'anyfile' not found");
+			throw new RepositoryException("Resource file '/anyfile' not found");
 		}
 		String fileName = resource.getFile();
 		String jarName = new File(fileName)
