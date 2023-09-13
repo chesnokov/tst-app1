@@ -1,6 +1,6 @@
 package com.rntgroup.tstapp;
 
-import com.rntgroup.tstapp.repository.CompositeUserTestRepository;
+import com.rntgroup.tstapp.repository.UserTestRepository;
 import com.rntgroup.tstapp.repository.UserTestRepositoryException;
 import com.rntgroup.tstapp.test.Question;
 import com.rntgroup.tstapp.test.UserTest;
@@ -11,12 +11,12 @@ import org.springframework.core.convert.ConversionService;
 import java.util.List;
 
 public class Application {
-	private final CompositeUserTestRepository repository;
+	private final UserTestRepository repository;
 	private final InputOutputService ioService;
 	private final ConversionService conversionService;
 	private final UserTestResultService userTestResultService;
 
-	public Application(CompositeUserTestRepository userTestRepository,
+	public Application(UserTestRepository userTestRepository,
 			InputOutputService ioService, ConversionService conversionService, UserTestResultService userTestResultService) {
 		this.repository = userTestRepository;
 		this.ioService = ioService;
