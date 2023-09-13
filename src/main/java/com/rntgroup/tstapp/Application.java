@@ -61,7 +61,8 @@ public class Application {
 				correctCount++;
 			}
 		}
-		UserTestResult userTestResult = new UserTestResult(correctCount, userTest.getQuestions().size());
+		UserTestResult userTestResult = new UserTestResult(userTest.getName(),
+			correctCount, userTest.getQuestions().size());
 		userTestResultService.processResult(userTestResult);
 	}
 
