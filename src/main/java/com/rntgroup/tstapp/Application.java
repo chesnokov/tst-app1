@@ -1,48 +1,59 @@
 package com.rntgroup.tstapp;
 
+import com.rntgroup.tstapp.repository.CompositeUserTestRepository;
 import com.rntgroup.tstapp.repository.RepositoryException;
-import com.rntgroup.tstapp.repository.UserTestRepository;
 import com.rntgroup.tstapp.test.Question;
 import com.rntgroup.tstapp.test.UserTest;
+import com.rntgroup.tstapp.test.UserTestResult;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.springframework.core.convert.ConversionService;
 
 import java.util.List;
-import java.util.Scanner;
 
 public class Application {
-	private final UserTestRepository repository;
+	private final CompositeUserTestRepository repository;
+	private final InputOutputService ioService;
+	private final ConversionService conversionService;
+	private final UserTestResultService userTestResultService;
 
-	public Application(UserTestRepository userTestRepository) {
+	public Application(CompositeUserTestRepository userTestRepository,
+			InputOutputService ioService, ConversionService conversionService, UserTestResultService userTestResultService) {
 		this.repository = userTestRepository;
+		this.ioService = ioService;
+		this.conversionService = conversionService;
+		this.userTestResultService = userTestResultService;
 	}
 
 	public void run() {
-		List<UserTest> tests;
 		try {
-			tests = repository.findAll();
+			List<UserTest> tests = repository.findAll();
+			listAndRunUserTests(tests);
 		} catch (RepositoryException e) {
-			System.out.println(ExceptionUtils.getStackTrace(e));
-			return;
+			ioService.println(ExceptionUtils.getStackTrace(e));
 		}
+	}
+
+	private void listAndRunUserTests(List<UserTest> tests) {
 		for(;;) {
-			for(int i=0; i<tests.size(); i++) {
-				System.out.println("" + (i+1) + ". " + tests.get(i).getName());
-			}
-			String input = getUserInput("Choose test or q: ");
+			listUserTests(tests);
+			String input = ioService.getUserInput("Choose test or q: ");
 			if(input.startsWith("q")) {
 				break;
 			} else {
-				runTest(tests, Integer.parseInt(input));
+				int index = Integer.parseInt(input);
+				if(index < 1 || index >= tests.size())  {
+					continue;
+				}
+				runTest(tests.get(index - 1));
 			}
 		}
-
 	}
 
-	private void runTest(List<UserTest> tests, int index)  {
-		if(index < 1 || index >= tests.size())  {
-			return;
-		}
-		UserTest userTest = tests.get(index-1);
+	private void listUserTests(List<UserTest> tests) {
+		ioService.print(conversionService.convert(tests, String.class));
+	}
+
+	private void runTest(UserTest userTest)  {
 		int correctCount = 0;
 		for(Question question: userTest.getQuestions()) {
 			boolean questionResult = getQuestionResult(question);
@@ -50,15 +61,13 @@ public class Application {
 				correctCount++;
 			}
 		}
-		System.out.println("Result: " + correctCount + " of " + userTest.getQuestions().size());
+		UserTestResult userTestResult = new UserTestResult(correctCount, userTest.getQuestions().size());
+		userTestResultService.processResult(userTestResult);
 	}
 
 	private boolean getQuestionResult(Question question) {
-		System.out.println(question.getText());
-		for(int i=0; i<question.getAnswers().size(); i++) {
-			System.out.println("" + (i + 1) + ". " + question.getAnswers().get(i).getText());
-		}
-		String input = getUserInput("Answer: ");
+		showQuestion(question);
+		String input = ioService.getUserInput("Answer: ");
 		int answerIndex = Integer.parseInt(input);
 		if (answerIndex >= 1 && answerIndex < question.getAnswers().size()) {
 			return question.getAnswers().get(answerIndex - 1).isCorrect();
@@ -67,10 +76,7 @@ public class Application {
 		}
 	}
 
-	private String getUserInput(String text) {
-		System.out.print(text);
-		Scanner scanner = new Scanner(System.in);
-		return scanner.nextLine().trim();
+	private void showQuestion(Question question) {
+		ioService.print(conversionService.convert(question, String.class));
 	}
-
 }

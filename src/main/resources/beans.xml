@@ -5,14 +5,25 @@
     http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
     ">
 
-    <bean id="userTestReader" class="com.rntgroup.tstapp.repository.CsvUserTestReader" />
-
-    <bean id="applicationProperties" class="com.rntgroup.tstapp.ApplicationProperties">
-        <constructor-arg index="0" value="tstapp.properties" />
+    <bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean">
+        <property name="converters">
+            <list>
+                <bean class="com.rntgroup.tstapp.conversion.QuestionConverter" />
+                <bean class="com.rntgroup.tstapp.conversion.ListTestConverter" />
+                <bean class="com.rntgroup.tstapp.conversion.UserTestResultConverter" />
+            </list>
+        </property>
     </bean>
 
+    <bean id="ioService" class="com.rntgroup.tstapp.InputOutputService" >
+        <constructor-arg index="0" ref="systemInput" />
+        <constructor-arg index="1" ref="systemOutput" />
+    </bean>
+
+    <bean id="userTestReader" class="com.rntgroup.tstapp.repository.CsvUserTestReader" />
+
     <bean id="externalTstDir" class="com.rntgroup.tstapp.repository.ExternalUserTestRepository">
-        <constructor-arg index="0" ref="applicationProperties" />
+        <constructor-arg index="0" ref="userTestDirectory" />
         <constructor-arg index="1" ref="userTestReader" />
     </bean>
 
@@ -32,12 +43,20 @@
 
     </bean>
 
-    <bean id="userTestRepository" class="com.rntgroup.tstapp.repository.UserTestRepository" >
+    <bean id="userTestRepository" class="com.rntgroup.tstapp.repository.CompositeUserTestRepository" >
         <constructor-arg index="0" ref="repositories" />
+    </bean>
+
+    <bean id="userTestResultService" class="com.rntgroup.tstapp.UserTestResultService" >
+        <constructor-arg index="0" ref="ioService" />
+        <constructor-arg index="1" ref="conversionService" />
     </bean>
 
     <bean id="application" class="com.rntgroup.tstapp.Application">
         <constructor-arg index="0" ref="userTestRepository" />
+        <constructor-arg index="1" ref="ioService" />
+        <constructor-arg index="2" ref="conversionService" />
+        <constructor-arg index="3" ref="userTestResultService" />
     </bean>
 
 </beans>

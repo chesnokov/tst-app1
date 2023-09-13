@@ -2,16 +2,17 @@ package com.rntgroup.tstapp.repository;
 
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
+import com.rntgroup.tstapp.test.Answer;
+import com.rntgroup.tstapp.test.Question;
 import com.rntgroup.tstapp.test.UserTest;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TestCsvUserTestReader {
 	private CsvUserTestReader userTestReader;
@@ -23,34 +24,33 @@ public class TestCsvUserTestReader {
 
 	@Test
 	public void shouldMakeEmptyUserTest() throws IOException, CsvValidationException {
+
+		UserTest expectedUserTest = new UserTest("testName", new ArrayList<>());
+
 		try(CSVReader reader = new CSVReader(new InputStreamReader(TestCsvUserTestReader.class.getResourceAsStream("/test2.csv")))) {
 			UserTest userTest = userTestReader.makeUserTest("testName", reader);
-			assertEquals("testName", userTest.getName());
-			assertEquals(0, userTest.getQuestions().size());
+			Assertions.assertThat(userTest).isEqualToComparingFieldByFieldRecursively(expectedUserTest);
 		}
 	}
 
 	@Test
 	public void shouldMakeUserTest() throws IOException, CsvValidationException {
+
+		List<Question> expectedQuestions = new ArrayList<>();
+		List<Answer> answers1 = new ArrayList<>();
+		answers1.add(new Answer("Answer1", false));
+		answers1.add(new Answer("Answer2", true));
+		expectedQuestions.add(new Question("Question1", answers1));
+		List<Answer> answers2 = new ArrayList<>();
+		answers2.add(new Answer("Answer1", true));
+		answers2.add(new Answer("Answer2", false));
+		answers2.add(new Answer("Answer3", false));
+		expectedQuestions.add(new Question("Question2", answers2));
+		UserTest expectedUserTest = new UserTest("testName", expectedQuestions);
+
 		try(CSVReader reader = new CSVReader(new InputStreamReader(TestCsvUserTestReader.class.getResourceAsStream("/test1.csv")))) {
 			UserTest userTest = userTestReader.makeUserTest("testName", reader);
-			assertEquals("testName", userTest.getName());
-			assertEquals(2, userTest.getQuestions().size());
-			assertEquals("Question1", userTest.getQuestions().get(0).getText());
-			assertEquals(2, userTest.getQuestions().get(0).getAnswers().size());
-			assertEquals("Answer1", userTest.getQuestions().get(0).getAnswers().get(0).getText());
-			assertEquals("Answer2", userTest.getQuestions().get(0).getAnswers().get(1).getText());
-			assertFalse(userTest.getQuestions().get(0).getAnswers().get(0).isCorrect());
-			assertTrue(userTest.getQuestions().get(0).getAnswers().get(1).isCorrect());
-			assertEquals("Question2", userTest.getQuestions().get(1).getText());
-			assertEquals(3, userTest.getQuestions().get(1).getAnswers().size());
-			assertEquals("Answer1", userTest.getQuestions().get(1).getAnswers().get(0).getText());
-			assertEquals("Answer2", userTest.getQuestions().get(1).getAnswers().get(1).getText());
-			assertEquals("Answer3", userTest.getQuestions().get(1).getAnswers().get(2).getText());
-			assertTrue(userTest.getQuestions().get(1).getAnswers().get(0).isCorrect());
-			assertFalse(userTest.getQuestions().get(1).getAnswers().get(1).isCorrect());
-			assertFalse(userTest.getQuestions().get(1).getAnswers().get(2).isCorrect());
+			Assertions.assertThat(userTest).isEqualToComparingFieldByFieldRecursively(expectedUserTest);
 		}
-
 	}
 }
