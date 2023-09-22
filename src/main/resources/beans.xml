@@ -22,7 +22,7 @@
         </property>
     </bean>
 
-    <bean id="ioService" class="com.rntgroup.tstapp.service.InputOutputService" >
+    <bean id="ioService" class="com.rntgroup.tstapp.service.ConsoleInputOutputService" >
         <constructor-arg index="0" value="#{T(System).in}" />
         <constructor-arg index="1" value="#{T(System).out}" />
     </bean>
