@@ -1,4 +1,4 @@
-package com.rntgroup.tstapp;
+package com.rntgroup.tstapp.service;
 
 import java.io.InputStream;
 import java.io.PrintStream;

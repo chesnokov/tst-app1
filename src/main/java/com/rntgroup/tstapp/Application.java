@@ -2,6 +2,8 @@ package com.rntgroup.tstapp;
 
 import com.rntgroup.tstapp.repository.UserTestRepository;
 import com.rntgroup.tstapp.repository.UserTestRepositoryException;
+import com.rntgroup.tstapp.service.InputOutputService;
+import com.rntgroup.tstapp.service.UserTestResultService;
 import com.rntgroup.tstapp.test.Question;
 import com.rntgroup.tstapp.test.UserTest;
 import com.rntgroup.tstapp.test.UserTestResult;
@@ -56,7 +58,7 @@ public class Application {
 	private void runTest(UserTest userTest)  {
 		int correctCount = 0;
 		for(Question question: userTest.getQuestions()) {
-			boolean questionResult = getQuestionResult(question);
+			boolean questionResult = askQuestion(question);
 			if(questionResult) {
 				correctCount++;
 			}
@@ -66,7 +68,7 @@ public class Application {
 		userTestResultService.processResult(userTestResult);
 	}
 
-	private boolean getQuestionResult(Question question) {
+	private boolean askQuestion(Question question) {
 		showQuestion(question);
 		String input = ioService.getUserInput("Answer: ");
 		int answerIndex = Integer.parseInt(input);

@@ -40,11 +40,11 @@ public class ExternalUserTestRepository implements UserTestRepository {
 		try(CSVReader csvReader = new CSVReader(new FileReader(file))) {
 			return userTestReader.makeUserTest(file.toString(),csvReader);
 		} catch (FileNotFoundException e) {
-			throw new UserTestRepositoryException(MessageFormat.format("User test not found {0}", file.toString()), e);
+			throw new UserTestRepositoryException(MessageFormat.format("User test not found {0}", file), e);
 		} catch (IOException e) {
-			throw new UserTestRepositoryException(MessageFormat.format("Error reading user test file {0}", file.toString()), e);
+			throw new UserTestRepositoryException(MessageFormat.format("Error reading user test file {0}", file), e);
 		} catch (CsvValidationException e) {
-			throw new UserTestRepositoryException(MessageFormat.format("Error in csv structure of user test file {0}", file.toString()), e);
+			throw new UserTestRepositoryException(MessageFormat.format("Error in csv structure of user test file {0}", file), e);
 		}
 	}
 }

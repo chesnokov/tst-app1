@@ -1,4 +1,4 @@
-package com.rntgroup.tstapp;
+package com.rntgroup.tstapp.service;
 
 import com.rntgroup.tstapp.test.UserTestResult;
 import org.springframework.core.convert.ConversionService;

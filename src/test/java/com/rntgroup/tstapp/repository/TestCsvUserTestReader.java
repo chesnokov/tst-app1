@@ -30,13 +30,22 @@ public class TestCsvUserTestReader {
 
 		try(CSVReader reader = new CSVReader(new InputStreamReader(TestCsvUserTestReader.class.getResourceAsStream("/test2.csv")))) {
 			UserTest userTest = userTestReader.makeUserTest("testName", reader);
-			assertThat(userTest).isEqualToComparingFieldByFieldRecursively(expectedUserTest);
+			assertThat(userTest).usingRecursiveComparison().isEqualTo(expectedUserTest);
 		}
 	}
 
 	@Test
 	public void shouldMakeUserTest() throws IOException, CsvValidationException {
 
+		UserTest expectedUserTest = getUserTest();
+
+		try(CSVReader reader = new CSVReader(new InputStreamReader(TestCsvUserTestReader.class.getResourceAsStream("/test1.csv")))) {
+			UserTest userTest = userTestReader.makeUserTest("testName", reader);
+			assertThat(userTest).usingRecursiveComparison().isEqualTo(expectedUserTest);
+		}
+	}
+
+	private UserTest getUserTest() {
 		List<Question> expectedQuestions = new ArrayList<>();
 		List<Answer> answers1 = new ArrayList<>();
 		answers1.add(new Answer("Answer1", false));
@@ -47,11 +56,6 @@ public class TestCsvUserTestReader {
 		answers2.add(new Answer("Answer2", false));
 		answers2.add(new Answer("Answer3", false));
 		expectedQuestions.add(new Question("Question2", answers2));
-		UserTest expectedUserTest = new UserTest("testName", expectedQuestions);
-
-		try(CSVReader reader = new CSVReader(new InputStreamReader(TestCsvUserTestReader.class.getResourceAsStream("/test1.csv")))) {
-			UserTest userTest = userTestReader.makeUserTest("testName", reader);
-			assertThat(userTest).isEqualToComparingFieldByFieldRecursively(expectedUserTest);
-		}
+		return new UserTest("testName", expectedQuestions);
 	}
 }
