@@ -1,5 +1,6 @@
 package com.rntgroup.tstapp;
 
+import com.rntgroup.tstapp.application.Application;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 

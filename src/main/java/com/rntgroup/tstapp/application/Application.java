@@ -1,4 +1,4 @@
-package com.rntgroup.tstapp;
+package com.rntgroup.tstapp.application;
 
 import com.rntgroup.tstapp.repository.UserTestRepository;
 import com.rntgroup.tstapp.repository.UserTestRepositoryException;
@@ -7,9 +7,9 @@ import com.rntgroup.tstapp.service.UserTestResultService;
 import com.rntgroup.tstapp.test.Question;
 import com.rntgroup.tstapp.test.UserTest;
 import com.rntgroup.tstapp.test.UserTestResult;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.core.convert.ConversionService;
 
+import java.text.MessageFormat;
 import java.util.List;
 
 public class Application {
@@ -31,16 +31,18 @@ public class Application {
 			List<UserTest> tests = repository.findAll();
 			listAndRunUserTests(tests);
 		} catch (UserTestRepositoryException e) {
-			ioService.println(ExceptionUtils.getStackTrace(e));
+			ioService.println(
+				MessageFormat.format("Error during user tests loading: {0}",e.getMessage()));
 		}
 	}
 
 	private void listAndRunUserTests(List<UserTest> tests) {
-		for(;;) {
+		boolean runUserTest = true;
+		while(runUserTest) {
 			listUserTests(tests);
 			String input = ioService.getUserInput("Choose test or q: ");
 			if(input.startsWith("q")) {
-				break;
+				runUserTest = false;
 			} else {
 				int index = Integer.parseInt(input);
 				if(index < 1 || index >= tests.size())  {
@@ -70,13 +72,13 @@ public class Application {
 
 	private boolean askQuestion(Question question) {
 		showQuestion(question);
-		String input = ioService.getUserInput("Answer: ");
-		int answerIndex = Integer.parseInt(input);
-		if (answerIndex >= 1 && answerIndex < question.getAnswers().size()) {
-			return question.getAnswers().get(answerIndex - 1).isCorrect();
-		} else {
-			return false;
-		}
+		int answerIndex = ioService.getUserInputAsInt("Answer: ", 0);
+		return isAnswerCorrect(question, answerIndex);
+	}
+
+	private boolean isAnswerCorrect(Question question, int answerIndex) {
+		return answerIndex >= 1 && answerIndex < question.getAnswers().size() &&
+			question.getAnswers().get(answerIndex - 1).isCorrect();
 	}
 
 	private void showQuestion(Question question) {

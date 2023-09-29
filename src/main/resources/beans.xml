@@ -22,7 +22,7 @@
         </property>
     </bean>
 
-    <bean id="ioService" class="com.rntgroup.tstapp.service.ConsoleInputOutputService" >
+    <bean id="ioService" class="com.rntgroup.tstapp.service.StreamInputOutputService" >
         <constructor-arg index="0" value="#{T(System).in}" />
         <constructor-arg index="1" value="#{T(System).out}" />
     </bean>
@@ -60,7 +60,7 @@
         <constructor-arg index="1" ref="conversionService" />
     </bean>
 
-    <bean id="application" class="com.rntgroup.tstapp.Application">
+    <bean id="application" class="com.rntgroup.tstapp.application.Application">
         <constructor-arg index="0" ref="userTestRepository" />
         <constructor-arg index="1" ref="ioService" />
         <constructor-arg index="2" ref="conversionService" />

@@ -4,11 +4,11 @@ import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.Scanner;
 
-public class ConsoleInputOutputService implements InputOutputService {
+public class StreamInputOutputService implements InputOutputService {
 	private final PrintStream out;
 	private final InputStream in;
 
-	public ConsoleInputOutputService(InputStream in, PrintStream out) {
+	public StreamInputOutputService(InputStream in, PrintStream out) {
 		this.in = in;
 		this.out = out;
 	}
@@ -29,5 +29,15 @@ public class ConsoleInputOutputService implements InputOutputService {
 	public String getUserInput(String text) {
 		print(text);
 		return input();
+	}
+
+	@Override
+	public int getUserInputAsInt(String text, int errorInput) {
+		print(text);
+		try {
+			return Integer.parseInt(input());
+		} catch(NumberFormatException e) {
+			return errorInput;
+		}
 	}
 }

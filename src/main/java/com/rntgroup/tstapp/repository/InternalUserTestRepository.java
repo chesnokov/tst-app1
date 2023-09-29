@@ -33,9 +33,11 @@ public class InternalUserTestRepository implements UserTestRepository {
 	}
 
 	public List<UserTest> findAll() {
-		URL resource = InternalUserTestRepository.class.getResource("/anyfile");
+		String resourceDirectory = String.format("/%s",userTestDir);
+		URL resource = InternalUserTestRepository.class.getResource(resourceDirectory);
 		if(isNull(resource)) {
-			throw new UserTestRepositoryException("Resource file '/anyfile' not found");
+			throw new UserTestRepositoryException(
+					MessageFormat.format("User tests directory '{0}' not found", resourceDirectory));
 		}
 		String fileName = resource.getFile();
 		String jarName = new File(fileName)
@@ -57,7 +59,7 @@ public class InternalUserTestRepository implements UserTestRepository {
 				JarEntry je = entries.nextElement();
 				if (je.getName().startsWith(userTestDir) &&
 					je.getName().endsWith(userTestSuffix)) {
-					tstFiles.add(makeUserTest("/"+je.getName()));
+					tstFiles.add(makeUserTest(String.format("/%s",je.getName())));
 				}
 			}
 		} catch (IOException e) {
@@ -67,7 +69,7 @@ public class InternalUserTestRepository implements UserTestRepository {
 	}
 
 	private List<UserTest> getUserTestsFromFileSystem() {
-		String resourceDirectory = "/" + userTestDir;
+		String resourceDirectory = String.format("/%s", userTestDir);
 		URL resource = InternalUserTestRepository.class.getResource(resourceDirectory);
 		if(resource == null) {
 			throw new UserTestRepositoryException(MessageFormat.format("No directory {0} in application resource", resourceDirectory));
@@ -77,7 +79,7 @@ public class InternalUserTestRepository implements UserTestRepository {
 
 		return Arrays.stream(Optional.ofNullable(files).orElse(new File[0]))
 				.filter(f -> f.getName().endsWith(userTestSuffix))
-				.map(f -> "/" + userTestDir + "/" + f.getName())
+				.map(f -> String.format("/%s/%s", userTestDir,f.getName()))
 				.map(this::makeUserTest)
 				.collect(Collectors.toList());
 	}
