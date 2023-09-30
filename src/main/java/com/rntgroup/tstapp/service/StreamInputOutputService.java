@@ -2,6 +2,7 @@ package com.rntgroup.tstapp.service;
 
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.util.Optional;
 import java.util.Scanner;
 
 public class StreamInputOutputService implements InputOutputService {
@@ -32,12 +33,12 @@ public class StreamInputOutputService implements InputOutputService {
 	}
 
 	@Override
-	public int getUserInputAsInt(String text, int errorInput) {
+	public Optional<Integer> getUserInputAsInt(String text) {
 		print(text);
 		try {
-			return Integer.parseInt(input());
+			return Optional.of(Integer.parseInt(input()));
 		} catch(NumberFormatException e) {
-			return errorInput;
+			return Optional.empty();
 		}
 	}
 }

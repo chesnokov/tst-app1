@@ -72,7 +72,7 @@ public class Application {
 
 	private boolean askQuestion(Question question) {
 		showQuestion(question);
-		int answerIndex = ioService.getUserInputAsInt("Answer: ", 0);
+		int answerIndex = ioService.getUserInputAsInt("Answer: ").orElse(0);
 		return isAnswerCorrect(question, answerIndex);
 	}
 
