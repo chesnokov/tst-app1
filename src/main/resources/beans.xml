@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+    ">
+
+    <bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
+        <property name="location">
+                <value>classpath:/app.properties</value>
+        </property>
+        <property name="ignoreUnresolvablePlaceholders" value="true"/>
+    </bean>
+
+    <bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean">
+        <property name="converters">
+            <list>
+                <bean class="com.rntgroup.tstapp.conversion.QuestionConverter" />
+                <bean class="com.rntgroup.tstapp.conversion.ListTestConverter" />
+                <bean class="com.rntgroup.tstapp.conversion.UserTestResultConverter" />
+            </list>
+        </property>
+    </bean>
+
+    <bean id="ioService" class="com.rntgroup.tstapp.service.StreamInputOutputService" >
+        <constructor-arg index="0" value="#{T(System).in}" />
+        <constructor-arg index="1" value="#{T(System).out}" />
+    </bean>
+
+    <bean id="userTestReader" class="com.rntgroup.tstapp.repository.CsvUserTestReader" />
+
+    <bean id="externalTstDir" class="com.rntgroup.tstapp.repository.ExternalUserTestRepository">
+        <constructor-arg index="0" value="${test.external.dir}" />
+        <constructor-arg index="1" value="${test.suffix}" />
+        <constructor-arg index="2" ref="userTestReader" />
+    </bean>
+
+    <bean id="internalTstDir" class="com.rntgroup.tstapp.repository.InternalUserTestRepository">
+        <constructor-arg index="0" value="${test.internal.dir}" />
+        <constructor-arg index="1" value="${test.suffix}" />
+        <constructor-arg index="2" ref="userTestReader" />
+    </bean>
+
+    <bean id="repositories" class="java.util.ArrayList">
+        <constructor-arg>
+            <list>
+                <ref bean="internalTstDir" />
+                <ref bean="externalTstDir" />
+            </list>
+        </constructor-arg>
+
+    </bean>
+
+    <bean id="userTestRepository" class="com.rntgroup.tstapp.repository.CompositeUserTestRepository" >
+        <constructor-arg index="0" ref="repositories" />
+    </bean>
+
+    <bean id="userTestResultService" class="com.rntgroup.tstapp.service.UserTestResultService" >
+        <constructor-arg index="0" ref="ioService" />
+        <constructor-arg index="1" ref="conversionService" />
+    </bean>
+
+    <bean id="application" class="com.rntgroup.tstapp.application.Application">
+        <constructor-arg index="0" ref="userTestRepository" />
+        <constructor-arg index="1" ref="ioService" />
+        <constructor-arg index="2" ref="conversionService" />
+        <constructor-arg index="3" ref="userTestResultService" />
+    </bean>
+
+</beans>
